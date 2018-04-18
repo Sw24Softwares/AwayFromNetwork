@@ -1,3 +1,5 @@
 <resources>
-    <string name="app_name">AwayFromNetwork</string>
+  <string name="app_name">AwayFromNetwork</string>
+  <string name="bluetooth">Bluetooth</string>
+  <string name="research">Research</string>
 </resources>
