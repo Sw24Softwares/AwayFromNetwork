@@ -10,38 +10,48 @@ import android.content.Intent
 import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothAdapter
 import android.widget.TextView
+import android.widget.ExpandableListView
 
-class BluetoothResearchActivity : AppCompatActivity() {
+class BluetoothDevicesActivity : AppCompatActivity() {
+        var mListAdapter : ExpandableListAdapter? = null
+        var mExpListView : ExpandableListView? = null
+        var mListDataHeader : MutableList<String> = ArrayList<String>()
+        var mListDataChild = HashMap<String, List<String>>()
+        
         val broadCastReceiver = object : BroadcastReceiver () {
                 override fun onReceive(context : Context?, intent : Intent) {
                         val action = intent.getAction()
                         if (BluetoothDevice.ACTION_FOUND.equals(action)) {
                                 val device : BluetoothDevice = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE)
-                                val deviceName = device.getName()
-                                val deviceHardwareAddress = device.getAddress()
-                                val label = findViewById(R.id.bluetooth_research_text) as TextView
-                                label.setText(label.getText().toString() + "\n" + deviceName)
+                                val list = mListDataChild.remove("Found")?.toMutableList() ?: mutableListOf()
+                                list.add(device.getName())
+                                mListDataChild.put("Found", list)
                         }
                 }
         }
         
         override fun onCreate(savedInstanceState: Bundle?) {
                 super.onCreate(savedInstanceState)
-                setContentView(R.layout.activity_bluetooth_research)
-                
+                setContentView(R.layout.activity_bluetooth_devices)
+
+                mListDataHeader.add("Found")
+                mListDataChild.put("Found", mutableListOf())
                 val filter = IntentFilter(BluetoothDevice.ACTION_FOUND)
                 registerReceiver(broadCastReceiver, filter)
 
-                // Sample code to find PairedDevices / May be useful later
-                /*val label = findViewById(R.id.bluetooth_research_text) as TextView
+                mListDataHeader.add("Paired Devices")
+                val devices : MutableList<String> = mutableListOf()
                 val pairedDevices = BluetoothAdapter.getDefaultAdapter().getBondedDevices()
                 if (pairedDevices.size > 0) {
                         for (device in pairedDevices) {
-                                val deviceName = device.getName()
-                                val deviceHardwareAddress = device.getAddress()
-                                label.setText(label.getText().toString() + "\n" + deviceName)
+                                devices.add(device.getName())
                         }
-                }*/
+                }
+                mListDataChild.put("Paired Devices", devices)
+
+                mListAdapter = ExpandableListAdapter(this, mListDataHeader, mListDataChild)
+                mExpListView = findViewById(R.id.bluetooth_devices_list) as ExpandableListView;
+                mExpListView?.setAdapter(mListAdapter)
 
                 BluetoothAdapter.getDefaultAdapter().startDiscovery()
         }

@@ -37,7 +37,7 @@ class BluetoothMainActivity : AppCompatActivity() {
 
                 val button = findViewById(R.id.bluetooth_research) as Button
                 button.setOnClickListener {
-                        val intent = Intent(this, BluetoothResearchActivity::class.java)
+                        val intent = Intent(this, BluetoothDevicesActivity::class.java)
                         startActivity(intent)
                 }
 

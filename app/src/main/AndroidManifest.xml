@@ -20,7 +20,7 @@
       </intent-filter>
     </activity>
     <activity android:name=".BluetoothMainActivity" />
-    <activity android:name=".BluetoothResearchActivity" />
+    <activity android:name=".BluetoothDevicesActivity" />
   </application>
 
 </manifest>
