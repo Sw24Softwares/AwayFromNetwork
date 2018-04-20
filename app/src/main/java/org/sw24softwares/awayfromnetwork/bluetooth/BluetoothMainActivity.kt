@@ -17,6 +17,7 @@ class BluetoothMainActivity : AppCompatActivity() {
         companion object {
                 const val REQUEST_ENABLE_BT = 1
                 const val REQUEST_COARSE_LOCATION_PERMISSIONS = 2
+                val mBluetoothInteraction = BluetoothInteraction();
         }
 
         override fun onCreate(savedInstanceState: Bundle?) {
@@ -29,17 +30,20 @@ class BluetoothMainActivity : AppCompatActivity() {
                         val enableBtIntent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
                         startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT)
                 }
+                
                 val hasPermission = ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
                 if (hasPermission != PackageManager.PERMISSION_GRANTED) {
                         val arr : Array<String> = arrayOf(android.Manifest.permission.ACCESS_COARSE_LOCATION);
                         ActivityCompat.requestPermissions(this, arr, REQUEST_COARSE_LOCATION_PERMISSIONS)
                 }
 
+                mBluetoothInteraction.listen()
+
+                // Button ClickListener
                 val button = findViewById(R.id.bluetooth_research) as Button
                 button.setOnClickListener {
                         val intent = Intent(this, BluetoothDevicesActivity::class.java)
                         startActivity(intent)
                 }
-
         }
 }

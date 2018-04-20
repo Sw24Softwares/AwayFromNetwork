@@ -24,7 +24,7 @@ class BluetoothDevicesActivity : AppCompatActivity() {
                         if (BluetoothDevice.ACTION_FOUND.equals(action)) {
                                 val device : BluetoothDevice = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE)
                                 val list = mListDataChild.remove("Found")?.toMutableList() ?: mutableListOf()
-                                list.add(device.getName())
+                                list.add(device.getName() ?: device.getAddress())
                                 mListDataChild.put("Found", list)
                         }
                 }
