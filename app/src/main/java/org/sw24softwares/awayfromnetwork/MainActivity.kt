@@ -11,9 +11,15 @@ class MainActivity : AppCompatActivity() {
                 super.onCreate(savedInstanceState)
                 setContentView(R.layout.activity_main)
 
-                val button = findViewById(R.id.main_bluetooth) as Button
-                button.setOnClickListener {
+                val button_bt = findViewById(R.id.main_bluetooth) as Button
+                button_bt.setOnClickListener {
                         val intent = Intent(this, BluetoothMainActivity::class.java)
+                        startActivity(intent)
+                }
+
+                val button_wf = findViewById(R.id.main_wifi) as Button
+                button_wf.setOnClickListener {
+                        val intent = Intent(this, WifiMainActivity::class.java)
                         startActivity(intent)
                 }
         }
