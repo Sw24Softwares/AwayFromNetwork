@@ -3,6 +3,4 @@
   <string name="bluetooth">Bluetooth</string>
   <string name="wifi">WiFi</string>
   <string name="research">Research</string>
-  <string name="hotspot_create">Create Host</string>
-  <string name="hotspot_join">Join Host</string>
 </resources>
