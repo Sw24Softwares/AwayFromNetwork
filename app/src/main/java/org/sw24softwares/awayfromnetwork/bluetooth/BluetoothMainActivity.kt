@@ -9,7 +9,8 @@ import android.bluetooth.BluetoothAdapter
 
 import android.content.pm.PackageManager
 import android.support.v4.app.ActivityCompat
-import android.Manifest 
+import android.Manifest
+import android.os.Handler
 
 import kotlin.system.exitProcess
 
@@ -17,7 +18,7 @@ class BluetoothMainActivity : AppCompatActivity() {
         companion object {
                 const val REQUEST_ENABLE_BT = 1
                 const val REQUEST_COARSE_LOCATION_PERMISSIONS = 2
-                val mBluetoothInteraction = BluetoothInteraction();
+                val mBluetoothInteraction = BluetoothInteraction(BluetoothAdapter.getDefaultAdapter())
         }
 
         override fun onCreate(savedInstanceState: Bundle?) {

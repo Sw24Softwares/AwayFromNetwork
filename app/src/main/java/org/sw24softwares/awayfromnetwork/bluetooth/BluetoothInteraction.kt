@@ -15,19 +15,17 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Message
 
-import kotlin.system.exitProcess
-
-class  BluetoothInteraction {
+class  BluetoothInteraction (adapter : BluetoothAdapter) : Communication() {
         companion object {
                 const val NAME = "AwayFromNetwork"
                 const val TAG = "AwayFromNetwork"
                 val APP_UUID = UUID.fromString("91bc109b-32ea-4acd-9ff5-103c94ca6742")
         }
-        private var mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
-        private var mHandler = Handler()
+        private var mBluetoothAdapter = adapter
 
         private var mAcceptThread : AcceptThread? = null
         private var mConnectThread : ConnectThread? = null
+        private var mConnectedThread : ConnectedThread? = null
 
         enum class MessageConstants(val flag : Int) {
                 MESSAGE_READ(0),
@@ -43,6 +41,17 @@ class  BluetoothInteraction {
                 mConnectThread = ConnectThread(device)
                 mConnectThread?.start()
         }
+
+        override fun write(bytes : ByteArray) {
+                var r : ConnectedThread? = null
+                // Synchronize a copy of the ConnectedThread
+                synchronized (this) {
+                        if (mConnectedThread == null) return
+                        r = mConnectedThread
+                }
+                // Perform the write unsynchronized
+                r?.write(bytes);
+        }
         
         // ---------------------------------------------------------------------
         private inner class AcceptThread : Thread() {
@@ -54,7 +63,7 @@ class  BluetoothInteraction {
                         var tmp : BluetoothServerSocket? = null
                         try {
                                 // APP_UUID is the app's UUID string, also used by the client code.
-                                tmp = mBluetoothAdapter?.listenUsingRfcommWithServiceRecord(NAME, APP_UUID)
+                                tmp = mBluetoothAdapter.listenUsingRfcommWithServiceRecord(NAME, APP_UUID)
                         } catch (e : IOException) {
                                 Log.e(TAG, "Socket's listen() method failed", e)
                         }
@@ -75,7 +84,7 @@ class  BluetoothInteraction {
                                 if (socket != null) {
                                         // A connection was accepted. Perform work associated with
                                         // the connection in a separate thread.
-                                        // manageMyConnectedSocket(socket)
+                                        mConnectedThread = ConnectedThread(socket)
                                         mmServerSocket?.close()
                                         break;
                                 }
@@ -113,7 +122,7 @@ class  BluetoothInteraction {
 
                 override fun run() {
                         // Cancel discovery because it otherwise slows down the connection.
-                        mBluetoothAdapter?.cancelDiscovery();
+                        mBluetoothAdapter.cancelDiscovery();
 
                         try {
                                 // Connect to the remote device through the socket. This call blocks
@@ -131,7 +140,7 @@ class  BluetoothInteraction {
 
                         // The connection attempt succeeded. Perform work associated with
                         // the connection in a separate thread.
-                        //manageMyConnectedSocket(mmSocket);
+                        if(mmSocket != null) mConnectedThread = ConnectedThread(mmSocket)
                 }
 
                 // Closes the client socket and causes the thread to finish.
