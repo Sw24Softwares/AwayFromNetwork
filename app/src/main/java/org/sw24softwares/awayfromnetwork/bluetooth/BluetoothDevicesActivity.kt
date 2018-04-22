@@ -18,8 +18,6 @@ import android.widget.Toast
 import android.view.View
 import android.content.res.Configuration
 
-import kotlin.system.exitProcess
-
 class BluetoothDevicesActivity : ListActivity() {
         var mFoundDevices : HashMap<String,BluetoothDevice> = hashMapOf()
         var mArrayAdapter : ArrayAdapter<String>? = null
@@ -32,6 +30,9 @@ class BluetoothDevicesActivity : ListActivity() {
                                 mFoundDevices.put(device.getName() ?: device.getAddress(),device)
                                 mArrayAdapter?.add(device.getName() ?: device.getAddress())
                         }
+                        if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action)) {
+                                Toast.makeText(this@BluetoothDevicesActivity, "Discovery stopped", 5).show()
+                        }
                 }
         }
         
@@ -42,13 +43,19 @@ class BluetoothDevicesActivity : ListActivity() {
                 setListAdapter(mArrayAdapter)
                 
                 val filter = IntentFilter(BluetoothDevice.ACTION_FOUND)
+                filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED)
                 registerReceiver(broadCastReceiver, filter)
                 BluetoothAdapter.getDefaultAdapter().startDiscovery()
+                Toast.makeText(this, "Discovery started", 5).show()
 
                 getListView().setOnItemClickListener { _, view, _, _ -> 
                         try {
+                                BluetoothAdapter.getDefaultAdapter().cancelDiscovery()
                                 val device = mFoundDevices.get((view as TextView).getText().toString())
-                                if(device != null) BluetoothMainActivity.mBluetoothInteraction.connect(device)
+                                if(device != null) {
+                                        Toast.makeText(this, "Trying to establish a connection to " + device.getName(), 5).show()
+                                        BluetoothMainActivity.mBluetoothInteraction.connect(device)
+                                }
                         } catch (x : ClassNotFoundException) {
                                 System.err.format("ClassNotFoundException: %s%n", x)
                        }
