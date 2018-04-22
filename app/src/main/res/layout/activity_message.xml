@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/container"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="2dp"
+                android:layout_marginRight="2dp" >
+  
+  <ListView
+      android:id="@+id/message_listview"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:layout_above="@+id/sendMsgLayout"
+      android:overScrollMode="always"
+      android:stackFromBottom="true"
+      android:layout_alignParentTop="true"
+      android:transcriptMode="normal">
+  </ListView>
+
+  <RelativeLayout
+      android:id="@+id/sendMsgLayout"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_alignParentBottom="true"
+      android:layout_marginTop="20dp"
+      android:layout_marginBottom="5dp" >
+    <EditText
+        android:id="@+id/message_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_toLeftOf="@+id/imageSend"
+        android:hint="Message"
+        android:maxLines="3" >
+      <requestFocus />
+    </EditText>
+    <ImageView
+        android:id="@+id/message_image_send"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/messageText"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="10dp"
+        android:src="@drawable/ic_send_black_24dp" />
+  </RelativeLayout>
+</RelativeLayout>

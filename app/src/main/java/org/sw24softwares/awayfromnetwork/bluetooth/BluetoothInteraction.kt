@@ -41,6 +41,18 @@ class  BluetoothInteraction (adapter : BluetoothAdapter) : Communication() {
                 mConnectThread = ConnectThread(device)
                 mConnectThread?.start()
         }
+        fun connected(socket : BluetoothSocket, device : BluetoothDevice) {
+                mConnectedThread = ConnectedThread(socket)
+                mConnectedThread?.start()
+
+                Communication.registerCommunication(this)
+                
+                val msg = mHandler.obtainMessage(Constants.MESSAGE_DEVICE_NAME)
+                val bundle = Bundle()
+                bundle.putString(Constants.DEVICE_NAME, device.getName())
+                msg.setData(bundle)
+                mHandler.sendMessage(msg)
+        }
 
         override fun write(bytes : ByteArray) {
                 var r : ConnectedThread? = null
@@ -84,7 +96,7 @@ class  BluetoothInteraction (adapter : BluetoothAdapter) : Communication() {
                                 if (socket != null) {
                                         // A connection was accepted. Perform work associated with
                                         // the connection in a separate thread.
-                                        mConnectedThread = ConnectedThread(socket)
+                                        connected(socket, socket.getRemoteDevice())
                                         mmServerSocket?.close()
                                         break;
                                 }
@@ -140,7 +152,7 @@ class  BluetoothInteraction (adapter : BluetoothAdapter) : Communication() {
 
                         // The connection attempt succeeded. Perform work associated with
                         // the connection in a separate thread.
-                        if(mmSocket != null) mConnectedThread = ConnectedThread(mmSocket)
+                        if(mmSocket != null) connected(mmSocket, mmSocket.getRemoteDevice())
                 }
 
                 // Closes the client socket and causes the thread to finish.

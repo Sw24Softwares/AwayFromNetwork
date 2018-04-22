@@ -22,6 +22,7 @@
         <category android:name="android.intent.category.LAUNCHER" />
       </intent-filter>
     </activity>
+    <activity android:name=".MessageActivity" />
     <activity android:name=".BluetoothMainActivity" />
     <activity android:name=".BluetoothDevicesActivity" />
     <activity android:name=".WifiMainActivity" />

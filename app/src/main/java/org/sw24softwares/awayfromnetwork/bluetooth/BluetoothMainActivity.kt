@@ -11,8 +11,8 @@ import android.content.pm.PackageManager
 import android.support.v4.app.ActivityCompat
 import android.Manifest
 import android.os.Handler
-
-import kotlin.system.exitProcess
+import android.os.Message
+import android.util.Log
 
 class BluetoothMainActivity : AppCompatActivity() {
         companion object {
@@ -26,7 +26,9 @@ class BluetoothMainActivity : AppCompatActivity() {
                 setContentView(R.layout.activity_bluetooth_main)
 
                 val mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
-                if (mBluetoothAdapter == null) exitProcess(1)
+                if (mBluetoothAdapter == null) {
+                       Log.e("AwayFromNetwork", "Bluetooth is unavailable, this part of the application is useless, please check if you can activate Bluetooth or use the Wifi part");
+                }
                 if (!mBluetoothAdapter.isEnabled()) {
                         val enableBtIntent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
                         startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT)
@@ -39,6 +41,17 @@ class BluetoothMainActivity : AppCompatActivity() {
                 }
 
                 mBluetoothInteraction.listen()
+                val handler = object : Handler() {
+                        override fun handleMessage(msg : Message) {
+                                when (msg.what) {
+                                        Constants.MESSAGE_DEVICE_NAME -> {
+                                                val intent = Intent(this@BluetoothMainActivity, MessageActivity::class.java)
+                                                startActivity(intent)
+                                        }
+                                }
+                        }
+                }
+                mBluetoothInteraction.setHandler(handler)
 
                 // Button ClickListener
                 val button = findViewById(R.id.bluetooth_research) as Button
