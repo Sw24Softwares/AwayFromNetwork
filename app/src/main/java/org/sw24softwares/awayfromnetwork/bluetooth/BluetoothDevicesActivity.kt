@@ -12,13 +12,17 @@ import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothAdapter
 import android.widget.TextView
 import android.widget.ExpandableListView
-import android.widget.ArrayAdapter;
-import android.widget.AdapterView;
-import android.view.View;
+import android.widget.ArrayAdapter
+import android.widget.AdapterView
+import android.widget.Toast
+import android.view.View
+import android.content.res.Configuration
+
+import kotlin.system.exitProcess
 
 class BluetoothDevicesActivity : ListActivity() {
         var mFoundDevices : HashMap<String,BluetoothDevice> = hashMapOf()
-        var arrayAdapter : ArrayAdapter<String>? = null
+        var mArrayAdapter : ArrayAdapter<String>? = null
         
         val broadCastReceiver = object : BroadcastReceiver () {
                 override fun onReceive(context : Context?, intent : Intent) {
@@ -26,7 +30,7 @@ class BluetoothDevicesActivity : ListActivity() {
                         if (BluetoothDevice.ACTION_FOUND.equals(action)) {
                                 val device : BluetoothDevice = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE)
                                 mFoundDevices.put(device.getName() ?: device.getAddress(),device)
-                                arrayAdapter?.add(device.getName() ?: device.getAddress())
+                                mArrayAdapter?.add(device.getName() ?: device.getAddress())
                         }
                 }
         }
@@ -34,8 +38,8 @@ class BluetoothDevicesActivity : ListActivity() {
         override fun onCreate(savedInstanceState: Bundle?) {
                 super.onCreate(savedInstanceState)
 
-                arrayAdapter = ArrayAdapter(this, android.R.layout.simple_list_item_1)
-                setListAdapter(arrayAdapter);
+                mArrayAdapter = ArrayAdapter(this, android.R.layout.simple_list_item_1)
+                setListAdapter(mArrayAdapter)
                 
                 val filter = IntentFilter(BluetoothDevice.ACTION_FOUND)
                 registerReceiver(broadCastReceiver, filter)
@@ -47,8 +51,8 @@ class BluetoothDevicesActivity : ListActivity() {
                                 if(device != null) BluetoothMainActivity.mBluetoothInteraction.connect(device)
                         } catch (x : ClassNotFoundException) {
                                 System.err.format("ClassNotFoundException: %s%n", x)
-                        }
-                }
+                       }
+               }
         }
         protected override fun onDestroy() {
                 super.onDestroy()

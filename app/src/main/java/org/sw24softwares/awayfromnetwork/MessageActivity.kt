@@ -14,6 +14,7 @@ import android.widget.ImageView
 import android.widget.ListView
 import android.widget.TextView
 import android.widget.ArrayAdapter
+import android.content.res.Configuration
 
 class MessageUI (s : String, m : String) {
         val sender = s
@@ -35,22 +36,25 @@ class MessageAdapter (context : Context, msg : ArrayList<MessageUI>) : ArrayAdap
 }
 
 class MessageActivity : AppCompatActivity() {
+        var mAdapter : MessageAdapter? = null
+        var mMessages = mutableListOf<MessageUI>()
+        
         override fun onCreate(savedInstanceState: Bundle?) {
                 super.onCreate(savedInstanceState)
                 setContentView(R.layout.activity_message)
 
-                val listview = findViewById(R.id.message_listview) as ListView
-                val adapter : ArrayAdapter<MessageUI> = MessageAdapter(this, ArrayList<MessageUI>());
-                listview.setAdapter(adapter);
+                mAdapter = MessageAdapter(this, ArrayList<MessageUI>())
+                val listview = findViewById(R.id.message_listview) as ListView 
+                listview.setAdapter(mAdapter);
                 
                 val communication = Communication.mRegisteredCommunications.get(Communication.mRegisteredCommunications.size-1)
                 communication.setHandler(object : Handler() {
                         override fun handleMessage(msg : Message) {
                                 when (msg.what) {
-                                        BluetoothInteraction.MessageConstants.MESSAGE_READ.flag -> {
+                                        MessageConstants.MESSAGE_READ.flag -> {
                                                 val readBuf = msg.obj as ByteArray
                                                 val readMessage = String(readBuf, 0, msg.arg1)
-                                                adapter.add(MessageUI(communication.mDeviceName,readMessage))
+                                                mAdapter?.add(MessageUI(communication.mDeviceName,readMessage))
                                         }
                                 }
                         }
@@ -61,7 +65,7 @@ class MessageActivity : AppCompatActivity() {
                 send_image.setOnClickListener {
                         if (text.getText().toString().length > 0) {
                                 val txt = text.getText().toString()
-                                adapter.add(MessageUI("You",txt))
+                                mAdapter?.add(MessageUI("You",txt))
                                 val send = txt.toByteArray()
                                 communication.write(send)
                                 text.setText("")

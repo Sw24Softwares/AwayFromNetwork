@@ -22,9 +22,11 @@
         <category android:name="android.intent.category.LAUNCHER" />
       </intent-filter>
     </activity>
-    <activity android:name=".MessageActivity" />
+    <activity android:name=".MessageActivity"
+              android:configChanges="keyboardHidden|orientation|screenSize" />
     <activity android:name=".BluetoothMainActivity" />
-    <activity android:name=".BluetoothDevicesActivity" />
+    <activity android:name=".BluetoothDevicesActivity"
+              android:configChanges="keyboardHidden|orientation|screenSize"/>
     <activity android:name=".WifiMainActivity" />
   </application>
 

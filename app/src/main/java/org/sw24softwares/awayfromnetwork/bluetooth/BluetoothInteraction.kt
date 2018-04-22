@@ -27,12 +27,6 @@ class  BluetoothInteraction (adapter : BluetoothAdapter) : Communication() {
         private var mConnectThread : ConnectThread? = null
         private var mConnectedThread : ConnectedThread? = null
 
-        enum class MessageConstants(val flag : Int) {
-                MESSAGE_READ(0),
-                MESSAGE_WRITE(1),
-                MESSAGE_TOAST(2)
-        }
-
         fun listen() {
                 mAcceptThread = AcceptThread()
                 mAcceptThread?.start()
