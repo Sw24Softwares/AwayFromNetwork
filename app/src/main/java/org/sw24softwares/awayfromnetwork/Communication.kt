@@ -9,7 +9,9 @@ open class Communication {
                         mRegisteredCommunications.add(com)
                 }
         }
-        
+
+        var mDeviceName = String()
+
         protected var mHandler = Handler()
         fun setHandler(handler : Handler) {
                 mHandler = handler

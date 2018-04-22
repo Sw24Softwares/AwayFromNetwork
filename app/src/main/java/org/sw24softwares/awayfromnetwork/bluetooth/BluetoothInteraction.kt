@@ -46,6 +46,7 @@ class  BluetoothInteraction (adapter : BluetoothAdapter) : Communication() {
                 mConnectedThread?.start()
 
                 Communication.registerCommunication(this)
+                mDeviceName = device.getName()
                 
                 val msg = mHandler.obtainMessage(Constants.MESSAGE_DEVICE_NAME)
                 val bundle = Bundle()
