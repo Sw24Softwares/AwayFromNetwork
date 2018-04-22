@@ -31,7 +31,7 @@ class BluetoothDevicesActivity : ListActivity() {
                 }
         }
         
-        override fun onCreate(savedInstanceState: oBundle?) {
+        override fun onCreate(savedInstanceState: Bundle?) {
                 super.onCreate(savedInstanceState)
 
                 arrayAdapter = ArrayAdapter(this, android.R.layout.simple_list_item_1)
@@ -41,7 +41,7 @@ class BluetoothDevicesActivity : ListActivity() {
                 registerReceiver(broadCastReceiver, filter)
                 BluetoothAdapter.getDefaultAdapter().startDiscovery()
 
-                getListView().setOnItemClickListener { parent, view, position, id -> 
+                getListView().setOnItemClickListener { _, view, _, _ -> 
                         try {
                                 val device = mFoundDevices.get((view as TextView).getText().toString())
                                 if(device != null) BluetoothMainActivity.mBluetoothInteraction.connect(device)

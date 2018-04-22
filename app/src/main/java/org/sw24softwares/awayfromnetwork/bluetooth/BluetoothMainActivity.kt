@@ -25,21 +25,25 @@ class BluetoothMainActivity : AppCompatActivity() {
                 super.onCreate(savedInstanceState)
                 setContentView(R.layout.activity_bluetooth_main)
 
+                // Check if Bluetooth is available
                 val mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
                 if (mBluetoothAdapter == null) {
                        Log.e("AwayFromNetwork", "Bluetooth is unavailable, this part of the application is useless, please check if you can activate Bluetooth or use the Wifi part");
-                }
+               }
+               // Check if Bluetooth is enabled
                 if (!mBluetoothAdapter.isEnabled()) {
                         val enableBtIntent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
                         startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT)
                 }
-                
+
+                // Ask for Bluetooth permissions
                 val hasPermission = ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
                 if (hasPermission != PackageManager.PERMISSION_GRANTED) {
                         val arr : Array<String> = arrayOf(android.Manifest.permission.ACCESS_COARSE_LOCATION);
                         ActivityCompat.requestPermissions(this, arr, REQUEST_COARSE_LOCATION_PERMISSIONS)
                 }
-
+                
+                // Set up Handler for accept connection
                 mBluetoothInteraction.listen()
                 val handler = object : Handler() {
                         override fun handleMessage(msg : Message) {
@@ -54,10 +58,17 @@ class BluetoothMainActivity : AppCompatActivity() {
                 mBluetoothInteraction.setHandler(handler)
 
                 // Button ClickListener
-                val button = findViewById(R.id.bluetooth_research) as Button
-                button.setOnClickListener {
+                val button_devices = findViewById(R.id.bluetooth_devices) as Button
+                button_devices.setOnClickListener {
                         val intent = Intent(this, BluetoothDevicesActivity::class.java)
                         startActivity(intent)
+                }
+                val button_discoverable = findViewById(R.id.bluetooth_discoverable) as Button
+                button_discoverable.setOnClickListener {
+                        // Make the device discoverable
+                        val discoverableIntent = Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
+                        discoverableIntent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 120);
+                        startActivity(discoverableIntent);
                 }
         }
 }
