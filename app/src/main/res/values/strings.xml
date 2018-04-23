@@ -4,4 +4,7 @@
   <string name="wifi">WiFi</string>
   <string name="research">Research</string>
   <string name="discoverable">Make my device discoverable</string>
+
+  <string name="activating_wifi">Activating WiFi</string>
+  <string name="no_device">No devices found</string>
 </resources>

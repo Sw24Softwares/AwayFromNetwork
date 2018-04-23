@@ -4,12 +4,11 @@
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"
               android:orientation="vertical"
-              android:layout_gravity="center"
-              android:gravity="center">
-  <Button
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:id="@+id/wifi_research"
-      android:text="@string/research"/>
+              android:layout_gravity="center_horizontal">
+
+  <ListView
+      android:id="@+id/device_list"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content" />
 
 </LinearLayout>
