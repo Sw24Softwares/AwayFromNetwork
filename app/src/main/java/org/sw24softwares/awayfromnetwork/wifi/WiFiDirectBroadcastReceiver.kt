@@ -11,7 +11,6 @@ import android.net.wifi.p2p.WifiP2pManager.PeerListListener
 import android.net.wifi.p2p.WifiP2pDevice
 import android.net.wifi.p2p.WifiP2pDeviceList
 
-import org.sw24softwares.awayfromnetwork.R
 import android.util.Log
 
 class WiFiDirectBroadcastReceiver(manager : WifiP2pManager?, channel : Channel?, peerListListener : PeerListListener?) : BroadcastReceiver() {

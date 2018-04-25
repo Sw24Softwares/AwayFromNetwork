@@ -3,6 +3,7 @@
   <string name="bluetooth">Bluetooth</string>
   <string name="wifi">WiFi</string>
   <string name="research">Research</string>
+  <string name="searching">Searching for devices</string>
   <string name="discoverable">Make my device discoverable</string>
 
   <string name="activating_wifi">Activating WiFi</string>

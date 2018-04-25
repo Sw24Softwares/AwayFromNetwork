@@ -46,7 +46,7 @@ class BluetoothDevicesActivity : ListActivity() {
                 filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED)
                 registerReceiver(broadCastReceiver, filter)
                 BluetoothAdapter.getDefaultAdapter().startDiscovery()
-                Toast.makeText(this, "Discovery started", 5).show()
+                Toast.makeText(this, getString(R.string.searching), 5).show()
 
                 getListView().setOnItemClickListener { _, view, _, _ -> 
                         try {
