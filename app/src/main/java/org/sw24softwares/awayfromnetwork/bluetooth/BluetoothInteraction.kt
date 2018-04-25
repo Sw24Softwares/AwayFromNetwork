@@ -15,13 +15,13 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Message
 
-class  BluetoothInteraction (adapter : BluetoothAdapter) : Communication() {
+class  BluetoothInteraction : Communication() {
         companion object {
                 const val NAME = "AwayFromNetwork"
                 const val TAG = "AwayFromNetwork"
                 val APP_UUID = UUID.fromString("91bc109b-32ea-4acd-9ff5-103c94ca6742")
         }
-        private var mBluetoothAdapter = adapter
+        private var mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
 
         private var mAcceptThread : AcceptThread? = null
         private var mConnectThread : ConnectThread? = null
