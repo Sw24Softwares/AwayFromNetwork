@@ -19,8 +19,6 @@ import android.net.wifi.p2p.WifiP2pDeviceList
 import android.util.Log
 
 class WifiMainActivity : AppCompatActivity() {
-        val mContext = this
-
         var mIntentFilter = IntentFilter()
         var mChannel : Channel? = null
         var mManager : WifiP2pManager? = null
@@ -38,6 +36,11 @@ class WifiMainActivity : AppCompatActivity() {
                 mArrayAdapter = ArrayAdapter(this, android.R.layout.simple_list_item_1)
                 mListView?.setAdapter(mArrayAdapter)
 
+                // Initialize Wi-Fi P2P
+                mManager = getSystemService(Context.WIFI_P2P_SERVICE) as WifiP2pManager
+                mChannel = mManager?.initialize(this, getMainLooper(), null)
+                mReceiver = WiFiDirectBroadcastReceiver(mManager, mChannel, peerListListener)
+
                 // Indicates a change in the Wi-Fi P2P status.
                 mIntentFilter.addAction(WifiP2pManager.WIFI_P2P_STATE_CHANGED_ACTION)
 
@@ -49,10 +52,6 @@ class WifiMainActivity : AppCompatActivity() {
 
                 // Indicates this device's details have changed.
                 mIntentFilter.addAction(WifiP2pManager.WIFI_P2P_THIS_DEVICE_CHANGED_ACTION)
-
-                // Initialize Wi-Fi P2P
-                mManager = getSystemService(Context.WIFI_P2P_SERVICE) as WifiP2pManager
-                mChannel = mManager?.initialize(this, getMainLooper(), null)
 
                 val action = object : WifiP2pManager.ActionListener {
                         override fun onSuccess() {
@@ -71,7 +70,6 @@ class WifiMainActivity : AppCompatActivity() {
                 super.onResume()
 
                 // Initiates Wifi P2P receiver
-                mReceiver = WiFiDirectBroadcastReceiver(mManager, mChannel, peerListListener)
                 registerReceiver(mReceiver, mIntentFilter)
         }
 
@@ -92,7 +90,6 @@ class WifiMainActivity : AppCompatActivity() {
 
                         if (mPeers.size == 0) {
                                 Log.d("p2p" , "No devices found")
-                                Toast.makeText(this@WifiMainActivity, getString(R.string.no_device), Toast.LENGTH_LONG).show()
                                 return
                         }
 

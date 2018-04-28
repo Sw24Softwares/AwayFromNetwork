@@ -44,9 +44,7 @@ class WiFiDirectBroadcastReceiver(manager : WifiP2pManager?, channel : Channel?,
                         // Request available peers from the wifi p2p manager. This is an
                         // asynchronous call and the calling activity is notified with a
                         // callback on PeerListListener.onPeersAvailable()
-                        if (mManager != null) {
-                                mManager?.requestPeers(mChannel, mPeerListListener);
-                        }
+                        mManager?.requestPeers(mChannel, mPeerListListener);
 
                 } else if (WifiP2pManager.WIFI_P2P_CONNECTION_CHANGED_ACTION.equals(action)) {
 
