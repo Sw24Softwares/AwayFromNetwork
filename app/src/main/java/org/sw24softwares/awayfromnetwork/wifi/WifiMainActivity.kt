@@ -56,7 +56,7 @@ class WifiMainActivity : AppCompatActivity() {
                 val action = object : WifiP2pManager.ActionListener {
                         override fun onSuccess() {
                                 Log.d("p2p", "discoverPeers() Success")
-                                Toast.makeText(mContext, mContext.getString(R.string.searching), Toast.LENGTH_SHORT).show()
+                                Toast.makeText(this@WifiMainActivity,getString(R.string.searching), Toast.LENGTH_SHORT).show()
                         }
 
                         override fun onFailure(reason : Int) {
