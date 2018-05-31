@@ -1,6 +1,6 @@
 package org.sw24softwares.awayfromnetwork
 
-import android.support.v7.app.AppCompatActivity
+import android.app.ListActivity
 import android.os.Bundle
 
 import android.content.IntentFilter
@@ -13,28 +13,28 @@ import android.widget.ArrayAdapter
 import android.net.wifi.p2p.WifiP2pManager
 import android.net.wifi.p2p.WifiP2pManager.Channel
 import android.net.wifi.p2p.WifiP2pManager.PeerListListener
+import android.net.wifi.p2p.WifiP2pManager.ActionListener
 import android.net.wifi.p2p.WifiP2pDevice
 import android.net.wifi.p2p.WifiP2pDeviceList
+import android.net.wifi.p2p.WifiP2pConfig
 
 import android.util.Log
 
-class WifiMainActivity : AppCompatActivity() {
+class WifiMainActivity : ListActivity() {
         var mIntentFilter = IntentFilter()
         var mChannel : Channel? = null
         var mManager : WifiP2pManager? = null
         var mReceiver : WiFiDirectBroadcastReceiver? = null
         var mArrayAdapter : ArrayAdapter<String>? = null
+        var mSelectedDevice = WifiP2pConfig()
 
         private var mPeers = ArrayList<WifiP2pDevice>()
-        private var mListView : ListView? = null
 
         override fun onCreate(savedInstanceState: Bundle?) {
                 super.onCreate(savedInstanceState)
-                setContentView(R.layout.activity_wifi_main)
 
-                mListView = findViewById(R.id.device_list) as ListView
                 mArrayAdapter = ArrayAdapter(this, android.R.layout.simple_list_item_1)
-                mListView?.setAdapter(mArrayAdapter)
+                setListAdapter(mArrayAdapter)
 
                 // Initialize Wi-Fi P2P
                 mManager = getSystemService(Context.WIFI_P2P_SERVICE) as WifiP2pManager
@@ -56,7 +56,7 @@ class WifiMainActivity : AppCompatActivity() {
                 val action = object : WifiP2pManager.ActionListener {
                         override fun onSuccess() {
                                 Log.d("p2p", "discoverPeers() Success")
-                                Toast.makeText(this@WifiMainActivity,getString(R.string.searching), Toast.LENGTH_SHORT).show()
+                                Toast.makeText(this@WifiMainActivity, getString(R.string.searching), Toast.LENGTH_SHORT).show()
                         }
 
                         override fun onFailure(reason : Int) {
@@ -64,6 +64,20 @@ class WifiMainActivity : AppCompatActivity() {
                         }
                 }
                 mManager?.discoverPeers(mChannel, action)
+
+                getListView().setOnItemClickListener {_, _, position, _ ->
+                        mSelectedDevice.deviceAddress = mPeers.get(position).deviceAddress
+
+                        mManager?.connect(mChannel, mSelectedDevice, object : ActionListener {
+                                override fun onSuccess() {
+                                        Toast.makeText(this@WifiMainActivity, "Connection success", 5).show()
+                                }
+
+                                override fun onFailure(reason : Int) {
+                                        Toast.makeText(this@WifiMainActivity, "Connection failure", 5).show()
+                                }
+                        })
+                }
         }
 
         override fun onResume() {
@@ -99,12 +113,9 @@ class WifiMainActivity : AppCompatActivity() {
 
         fun refreshListView() {
                 mArrayAdapter?.clear()
-                var i = 0
 
-                for(item in mPeers) {
-                        mArrayAdapter?.add(mPeers.get(i).deviceName.toString())
-                        i++
-                }
+                for(item in mPeers)
+                        mArrayAdapter?.add(item.deviceName.toString())
                 return
         }
 }
